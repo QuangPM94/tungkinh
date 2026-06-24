@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gõ Mõ Công Đức</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Dòng công đức trên cùng -->
+    <header class="merit">
+      <span class="merit__label">Công đức</span>
+      <span class="merit__count" id="meritCount">0</span>
+    </header>
+
+    <!-- Khu vực mõ + dùi gõ -->
+    <main class="stage" id="stage">
+      <div class="floating-text-layer" id="floatLayer"></div>
+
+      <!-- Dùi gõ -->
+      <div class="mallet" id="mallet">
+        <div class="mallet__handle"></div>
+        <div class="mallet__head"></div>
+      </div>
+
+      <!-- Cái mõ -->
+      <div class="woodfish" id="woodfish">
+        <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" aria-label="Mõ">
+          <defs>
+            <radialGradient id="woodGrad" cx="42%" cy="35%" r="75%">
+              <stop offset="0%" stop-color="#9a5b2a" />
+              <stop offset="55%" stop-color="#7a4420" />
+              <stop offset="100%" stop-color="#4f2a12" />
+            </radialGradient>
+            <radialGradient id="mouthGrad" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#2b160a" />
+              <stop offset="100%" stop-color="#120a04" />
+            </radialGradient>
+          </defs>
+          <!-- thân mõ -->
+          <ellipse cx="120" cy="115" rx="105" ry="78" fill="url(#woodGrad)" stroke="#3c2010" stroke-width="3" />
+          <!-- vân gỗ -->
+          <path d="M40 95 Q120 70 200 95" fill="none" stroke="#5e351a" stroke-width="3" opacity="0.5" />
+          <path d="M48 135 Q120 165 192 135" fill="none" stroke="#5e351a" stroke-width="3" opacity="0.4" />
+          <!-- khe miệng mõ -->
+          <path d="M60 150 Q120 185 180 150 Q120 168 60 150 Z" fill="url(#mouthGrad)" />
+          <!-- chấm điểm sáng -->
+          <ellipse cx="86" cy="86" rx="26" ry="16" fill="#b9803f" opacity="0.35" />
+        </svg>
+      </div>
+    </main>
+
+    <!-- 2 nút bấm -->
+    <div class="controls">
+      <button class="btn btn--primary" id="btnTap">Gõ</button>
+      <button class="btn btn--auto" id="btnAuto">Auto gõ</button>
+    </div>
+  </div>
+
+  <!-- Để dùng file âm thanh thật: bỏ comment và trỏ src tới file của bạn -->
+  <!-- <audio id="knockSound" src="sounds/knock.mp3" preload="auto"></audio> -->
+
+  <script src="script.js"></script>
+</body>
+</html>

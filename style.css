@@ -1,0 +1,260 @@
+:root {
+  --gold: #f4d58d;
+  --deep: #2a1608;
+  --accent: #c0392b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: "Segoe UI", "Noto Sans", system-ui, sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh; /* tránh bị thanh địa chỉ trên mobile che mất */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 50% 20%, #3a2a4d 0%, #1c1326 60%, #0d0813 100%);
+  color: #fff;
+  overflow: hidden;
+  user-select: none;
+}
+
+.app {
+  width: min(440px, 92vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 24px 0;
+}
+
+/* ---- Công đức ---- */
+.merit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.merit__label {
+  font-size: 18px;
+  letter-spacing: 6px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.merit__count {
+  font-size: 52px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 18px rgba(244, 213, 141, 0.6);
+  transition: transform 0.08s ease;
+}
+
+.merit__count.bump {
+  transform: scale(1.25);
+}
+
+/* ---- Sân khấu mõ ---- */
+.stage {
+  position: relative;
+  width: 300px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-text-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.float-merit {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(244, 213, 141, 0.8);
+  animation: floatUp 0.9s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translate(-50%, 0) scale(0.8); }
+  100% { opacity: 0; transform: translate(-50%, -90px) scale(1.3); }
+}
+
+/* ---- Mõ ---- */
+.woodfish {
+  width: 240px;
+  cursor: pointer;
+  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.55));
+  transition: transform 0.06s ease;
+  z-index: 2;
+}
+
+.woodfish.hit {
+  animation: fishHit 0.18s ease;
+}
+
+@keyframes fishHit {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.94) translateY(4px); }
+  100% { transform: scale(1); }
+}
+
+/* ---- Dùi gõ ---- */
+.mallet {
+  position: absolute;
+  top: -6px;
+  right: 64px;
+  width: 160px;
+  height: 160px;
+  transform: rotate(0deg);
+  transform-origin: 73% 17%; /* điểm tay cầm – tâm xoay khi gõ */
+  z-index: 3;
+  pointer-events: none;
+}
+
+.mallet.strike {
+  animation: strike 0.18s ease;
+}
+
+@keyframes strike {
+  0%   { transform: rotate(0deg); }
+  45%  { transform: rotate(-13deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.mallet__head {
+  position: absolute;
+  left: 12px;   /* tâm đầu tròn tại (40, 120) trong khung 160x160 */
+  top: 92px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #b9803f, #7a4420 70%, #4f2a12);
+  box-shadow: inset -4px -4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.mallet__handle {
+  position: absolute;
+  left: 33px;   /* tâm cán (x = 40) trùng tâm đầu tròn */
+  bottom: 40px; /* đáy cán nằm đúng tâm đầu tròn (y = 120) */
+  width: 14px;
+  height: 120px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #8a5a2c, #5e3a18);
+  transform-origin: 50% 100%; /* xoay quanh đáy cán = điểm nối với đầu tròn */
+  transform: rotate(40deg);   /* cán nghiêng 50° so với phương ngang */
+}
+
+/* ---- Nút bấm ---- */
+.controls {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn {
+  flex: 1;
+  max-width: 160px;
+  padding: 16px 0;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  color: #fff;
+  transition: transform 0.08s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, #d98a3d, #a85a1c);
+  box-shadow: 0 6px 16px rgba(168, 90, 28, 0.5);
+}
+
+.btn--auto {
+  background: linear-gradient(135deg, #5b8def, #3a5fc0);
+  box-shadow: 0 6px 16px rgba(58, 95, 192, 0.5);
+}
+
+.btn--auto.active {
+  background: linear-gradient(135deg, #e0533b, #b5281c);
+  box-shadow: 0 6px 18px rgba(181, 40, 28, 0.6);
+}
+
+.btn:hover {
+  filter: brightness(1.08);
+}
+
+/* ========== Điện thoại ========== */
+@media (max-width: 480px) {
+  .app {
+    width: 94vw;
+    gap: 18px;
+    padding: 16px 0;
+  }
+
+  .merit__label {
+    font-size: 15px;
+    letter-spacing: 4px;
+  }
+
+  .merit__count {
+    font-size: 44px;
+  }
+
+  /* Scale cả sân khấu để mõ + dùi giữ đúng tỉ lệ và vị trí */
+  .stage {
+    transform: scale(0.82);
+  }
+
+  .btn {
+    padding: 14px 0;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+}
+
+/* Màn hình rất nhỏ */
+@media (max-width: 340px) {
+  .stage {
+    transform: scale(0.7);
+  }
+
+  .merit__count {
+    font-size: 38px;
+  }
+}
+
+/* Màn hình ngang, thấp (điện thoại xoay ngang) */
+@media (max-height: 480px) and (orientation: landscape) {
+  .app {
+    gap: 10px;
+    padding: 8px 0;
+  }
+
+  .stage {
+    transform: scale(0.6);
+    height: 200px;
+  }
+
+  .merit__count {
+    font-size: 36px;
+  }
+}
