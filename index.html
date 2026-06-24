@@ -12,6 +12,7 @@
     <header class="merit">
       <span class="merit__label">Công đức</span>
       <span class="merit__count" id="meritCount">0</span>
+      <span class="badge" id="badge"></span>
     </header>
 
     <!-- Khu vực mõ + dùi gõ -->
@@ -56,7 +57,11 @@
       <button class="btn btn--primary" id="btnTap">Gõ</button>
       <button class="btn btn--auto" id="btnAuto">Auto gõ</button>
     </div>
+    <button class="btn-reset" id="btnReset">↺ Reset công đức</button>
   </div>
+
+  <!-- Hiệu ứng chúc mừng khi đạt mốc -->
+  <div class="celebrate" id="celebrate" aria-hidden="true"></div>
 
   <!-- Để dùng file âm thanh thật: bỏ comment và trỏ src tới file của bạn -->
   <!-- <audio id="knockSound" src="sounds/knock.mp3" preload="auto"></audio> -->

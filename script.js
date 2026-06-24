@@ -18,9 +18,52 @@ const malletEl = document.getElementById("mallet");
 const floatLayer = document.getElementById("floatLayer");
 const btnTap = document.getElementById("btnTap");
 const btnAuto = document.getElementById("btnAuto");
+const btnReset = document.getElementById("btnReset");
+const badgeEl = document.getElementById("badge");
+const celebrateEl = document.getElementById("celebrate");
 
-// Hiển thị công đức đã lưu từ lần trước
+// ===== Huy hiệu công đức =====
+const TIERS = [
+  { at: 100, icon: "🪷", name: "Sơ Phát Tâm" },
+  { at: 1000, icon: "🌟", name: "Tinh Tấn" },
+  { at: 10000, icon: "🏆", name: "Công Đức Viên Mãn" },
+];
+
+// Mốc cao nhất đã đạt với giá trị hiện tại
+function currentTier(value) {
+  let reached = null;
+  for (const tier of TIERS) {
+    if (value >= tier.at) reached = tier;
+  }
+  return reached;
+}
+
+// Hiện huy hiệu theo công đức hiện tại
+function renderBadge() {
+  const tier = currentTier(merit);
+  if (tier) {
+    badgeEl.innerHTML = `<span class="badge__icon">${tier.icon}</span>${tier.name}`;
+    badgeEl.classList.add("show");
+  } else {
+    badgeEl.textContent = "";
+    badgeEl.classList.remove("show");
+  }
+}
+
+// Hiệu ứng chúc mừng khi vừa đạt mốc mới
+function celebrate(tier) {
+  celebrateEl.innerHTML =
+    `<div class="celebrate__icon">${tier.icon}</div>` +
+    `<div class="celebrate__big">Đạt mốc ${tier.at.toLocaleString("vi-VN")} công đức!</div>` +
+    `<div class="celebrate__name">${tier.name}</div>`;
+  celebrateEl.classList.remove("show");
+  void celebrateEl.offsetWidth; // reset animation
+  celebrateEl.classList.add("show");
+}
+
+// Hiển thị công đức + huy hiệu đã lưu từ lần trước
 meritCountEl.textContent = merit;
+renderBadge();
 
 // ===== Âm thanh =====
 // Nếu sau này có file âm thanh thật: bỏ comment thẻ <audio id="knockSound"> trong index.html.
@@ -35,6 +78,34 @@ function ensureAudioCtx() {
   }
   if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
 }
+
+// iOS/Android chặn âm thanh cho tới khi người dùng chạm lần đầu.
+// Hàm này "mở khoá" audio ngay ở thao tác chạm/bấm đầu tiên.
+let audioUnlocked = false;
+function unlockAudio() {
+  ensureAudioCtx();
+  if (audioCtx && !audioUnlocked) {
+    // phát 1 buffer câm cực ngắn để đánh thức audio trên iOS
+    const buffer = audioCtx.createBuffer(1, 1, 22050);
+    const src = audioCtx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(audioCtx.destination);
+    src.start(0);
+    audioUnlocked = true;
+  }
+  if (audioEl) {
+    // mở khoá thẻ <audio> (nếu dùng file thật)
+    audioEl
+      .play()
+      .then(() => {
+        audioEl.pause();
+        audioEl.currentTime = 0;
+      })
+      .catch(() => {});
+  }
+}
+window.addEventListener("pointerdown", unlockAudio, { once: true });
+window.addEventListener("touchstart", unlockAudio, { once: true });
 
 // Tiếng gõ mõ tổng hợp tạm: 1 xung gỗ ngắn
 function playSynthKnock() {
@@ -70,9 +141,17 @@ function playKnock() {
 
 // ===== Hành động gõ =====
 function knock() {
+  const tierBefore = currentTier(merit);
   merit += 1;
   meritCountEl.textContent = merit;
   saveMerit();
+
+  // vừa vượt qua một mốc -> chúc mừng + cập nhật huy hiệu
+  const tierAfter = currentTier(merit);
+  if (tierAfter && tierAfter !== tierBefore) {
+    celebrate(tierAfter);
+    renderBadge();
+  }
 
   // hiệu ứng số nảy lên
   meritCountEl.classList.remove("bump");
@@ -101,12 +180,17 @@ function spawnFloatMerit() {
 }
 
 // ===== Auto gõ =====
+function stopAuto() {
+  if (!autoTimer) return;
+  clearInterval(autoTimer);
+  autoTimer = null;
+  btnAuto.classList.remove("active");
+  btnAuto.textContent = "Auto gõ";
+}
+
 function toggleAuto() {
   if (autoTimer) {
-    clearInterval(autoTimer);
-    autoTimer = null;
-    btnAuto.classList.remove("active");
-    btnAuto.textContent = "Auto gõ";
+    stopAuto();
   } else {
     ensureAudioCtx();
     knock(); // gõ ngay nhịp đầu
@@ -114,6 +198,16 @@ function toggleAuto() {
     btnAuto.classList.add("active");
     btnAuto.textContent = "Dừng";
   }
+}
+
+// ===== Reset công đức =====
+function resetMerit() {
+  if (!confirm("Xoá toàn bộ công đức về 0?")) return;
+  stopAuto();
+  merit = 0;
+  meritCountEl.textContent = merit;
+  saveMerit();
+  renderBadge();
 }
 
 // ===== Sự kiện =====
@@ -126,3 +220,4 @@ woodfishEl.addEventListener("click", () => {
   knock();
 });
 btnAuto.addEventListener("click", toggleAuto);
+btnReset.addEventListener("click", resetMerit);
